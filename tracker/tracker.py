@@ -3,7 +3,7 @@ import threading
 import jsonUtils
 import traceback
 
-IP = socket.gethostbyname(socket.gethostname())
+IP = '127.0.0.1'
 PORT = 3000
 ADDR = (IP, PORT)
 SIZE = 1024
@@ -34,8 +34,9 @@ def handle_client(conn, addr, jsonUtil):
 
         elif cmd == "UPDATE":
             try:
-                toShareFolderJson = data[1]
-                jsonUtil.updateJsonFile(addr, toShareFolderJson)
+                clientP2Pport = data[1]
+                toShareFolderJson = data[2]
+                jsonUtil.updateJsonFile(addr, toShareFolderJson, clientP2Pport)
                 conn.send("RUPDATE@UPDATE SUCCESS!".encode(FORMAT))
             except:
                 traceback.print_exc()
@@ -43,7 +44,8 @@ def handle_client(conn, addr, jsonUtil):
 
         elif cmd == "C":
             try:
-                jsonUtil.updateJsonFile(addr, None)
+                clientP2Pport = data[1]
+                jsonUtil.updateJsonFile(addr, None, clientP2Pport)
             except:
                 traceback.print_exc()
             break
@@ -53,7 +55,7 @@ def handle_client(conn, addr, jsonUtil):
             data += "LIST: List all the files from the server.\n"
             data += "UPDATE: UPDATE your records in the toShare folder, use only when you changed something in the toShare folder.\n"
             data += "C: Disconnect from the server.\n"
-            data += "GET <ip> <port> <path to folder(space seperated)>"
+            data += "GET <ip of host (get it from client.json)> <port of host> <copy_paste_field of the file/folder you need>"
 
             conn.send(data.encode(FORMAT))
 

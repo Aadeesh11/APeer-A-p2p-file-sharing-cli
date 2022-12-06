@@ -1,3 +1,6 @@
+import threading
+
+
 def pr(msg):
     if (True):
-        print(msg)
+        print(f'{threading.currentThread().getName()}' + msg)
